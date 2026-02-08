@@ -101,18 +101,50 @@
     #musicBtn:hover {
       background: rgba(255,255,255,0.5);
     }
+    #startScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #ff758c, #ff7eb3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    #startBtn {
+      background: white;
+      color: #ff4d6d;
+      border: none;
+      padding: 20px 40px;
+      font-size: 1.3rem;
+      border-radius: 50px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      transition: transform 0.2s ease;
+    }
+    #startBtn:hover {
+      transform: scale(1.05);
+    }
   </style>
 </head>
 <body>
   <audio id="bgMusic" loop>
     <source src="song.mp3" type="audio/mpeg">
   </audio>
+
+  <!-- Start Screen für Autoplay -->
+  <div id="startScreen">
+    <button id="startBtn">💖 Klick mich 💖</button>
+  </div>
   
-  <button id="musicBtn" onclick="toggleMusic()">🎵 Musik an</button>
+  <button id="musicBtn" onclick="toggleMusic()" style="display: none;">🎵 Musik aus</button>
 
   <div class="card">
     <div class="heart">❤️</div>
-    <img src="photo.jpg" alt="Us" class="photo" onerror="this.src='https://via.placeholder.com/140/ff7eb3/ffffff?text=💕'" />
+    <img src="photo.jpeg" alt="Us" class="photo" onerror="this.src='https://via.placeholder.com/140/ff7eb3/ffffff?text=💕'" />
     <h1>Mein Herz 💖</h1>
     <h2>Willst du mein Valentinstag-Date sein, meine Liebe?</h2>
     <p>
@@ -129,7 +161,23 @@
     const noBtn = document.getElementById('noBtn');
     const audio = document.getElementById('bgMusic');
     const musicBtn = document.getElementById('musicBtn');
+    const startScreen = document.getElementById('startScreen');
+    const startBtn = document.getElementById('startBtn');
     let isPlaying = false;
+
+    // Start Button - startet Musik automatisch
+    startBtn.addEventListener('click', function() {
+      audio.play().then(() => {
+        isPlaying = true;
+        startScreen.style.display = 'none';
+        musicBtn.style.display = 'block';
+      }).catch(e => {
+        console.log('Audio konnte nicht gestartet werden:', e);
+        startScreen.style.display = 'none';
+        musicBtn.style.display = 'block';
+        musicBtn.textContent = '🎵 Musik an';
+      });
+    });
 
     // Nein-Button wegbewegen
     noBtn.addEventListener('mouseover', moveButton);
@@ -146,11 +194,6 @@
 
     // Ja-Button Funktion
     function sayYes() {
-      if (!isPlaying) {
-        audio.play().catch(e => console.log('Audio play failed:', e));
-        isPlaying = true;
-        musicBtn.textContent = '🎵 Musik aus';
-      }
       alert('Yeeees! 💖 Ich freue mich riesig auf unser Date!');
     }
 
